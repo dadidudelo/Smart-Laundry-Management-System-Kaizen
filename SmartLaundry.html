@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Laundry - Rumah Talenta BCA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #1e3a8a;
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 1.1em;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            color: #475569;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .area-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .area-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .area-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #1e3a8a;
+        }
+
+        .area-summary {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .summary-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .machines-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .machine-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 18px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+
+        .machine-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-color: #3b82f6;
+        }
+
+        .machine-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .machine-name {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #1e3a8a;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .status-available {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-booked {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-in-use {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .machine-info {
+            color: #64748b;
+            margin-bottom: 12px;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95em;
+            margin-bottom: 8px;
+        }
+
+        .btn:last-child {
+            margin-bottom: 0;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-primary:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin: auto;
+        }
+
+        .modal-header {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #64748b;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            background: #f1f5f9;
+            color: #1e3a8a;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        .form-group label .required {
+            color: #ef4444;
+            margin-left: 3px;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .photo-upload {
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .photo-upload:hover {
+            border-color: #3b82f6;
+            background: #f8fafc;
+        }
+
+        .photo-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+
+        .booking-list {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .booking-item {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .history-item {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #10b981;
+        }
+
+        .history-item .status-badge {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .photo-thumbnail {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 8px;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .photo-thumbnail:hover {
+            transform: scale(1.05);
+        }
+
+        .photo-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .photo-modal.show {
+            display: flex;
+        }
+
+        .photo-modal img {
+            max-width: 90%;
+            max-height: 90vh;
+            border-radius: 10px;
+        }
+
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .booking-title {
+            font-weight: bold;
+            color: #1e3a8a;
+            font-size: 1.1em;
+        }
+
+        .booking-details {
+            color: #64748b;
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 2000;
+            max-width: 350px;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification.success {
+            border-left: 4px solid #22c55e;
+        }
+
+        .notification.warning {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .notification.error {
+            border-left: 4px solid #ef4444;
+        }
+
+        .report-item {
+            background: #fef3c7;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .time-slot {
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .time-slot:hover:not(.booked) {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .time-slot.selected {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .time-slot.booked {
+            background: #f1f5f9;
+            color: #94a3b8;
+            cursor: not-allowed;
+            border-color: #e2e8f0;
+        }
+
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .info-box p {
+            color: #1e40af;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .error-message {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            color: #991b1b;
+            font-size: 0.9em;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+            
+            .machines-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+
+            .area-summary {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Smart Laundry Management</h1>
+            <p>Rumah Talenta BCA - Sistem Pengelolaan Laundry Pintar</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('mesin')">Status Mesin</button>
+            <button class="tab-btn" onclick="switchTab('booking')">Booking Saya</button>
+            <button class="tab-btn" onclick="switchTab('history')">History Booking</button>
+            <button class="tab-btn" onclick="switchTab('laporan')">Laporan Masalah</button>
+        </div>
+
+        <div id="mesin-tab" class="tab-content active">
+            <div id="machinesContainer"></div>
+        </div>
+
+        <div id="booking-tab" class="tab-content">
+            <div class="booking-list">
+                <h2 style="color: #1e3a8a; margin-bottom: 20px;">Booking Saya</h2>
+                <div id="bookingList"></div>
+            </div>
+        </div>
+
+        <div id="history-tab" class="tab-content">
+            <div class="booking-list">
+                <h2 style="color: #1e3a8a; margin-bottom: 20px;">History Booking</h2>
+                <div id="historyList"></div>
+            </div>
+        </div>
+
+        <div id="laporan-tab" class="tab-content">
+            <div class="booking-list">
+                <h2 style="color: #1e3a8a; margin-bottom: 20px;">Laporan Masalah</h2>
+                <button class="btn btn-primary" onclick="openReportModal()" style="margin-bottom: 20px;">
+                    Buat Laporan Baru
+                </button>
+                <div id="reportList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Photo Modal -->
+    <div id="photoModal" class="photo-modal" onclick="closePhotoModal()">
+        <img id="photoModalImg" src="" alt="Foto Filter Mesin Cuci">
+    </div>
+
+    <!-- Modal Booking -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Booking Mesin Cuci</span>
+                <button class="close-btn" onclick="closeModal('bookingModal')">×</button>
+            </div>
+            
+            <div class="info-box">
+                <p>Lengkapi semua data booking Anda. Sistem akan mengirim pengingat 10 menit sebelum waktu mulai.</p>
+            </div>
+
+            <form id="bookingForm">
+                <div class="form-group">
+                    <label>Pilih Mesin Cuci:</label>
+                    <select id="bookingMachine" required>
+                        <option value="">-- Pilih Mesin --</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nama Lengkap:</label>
+                        <input type="text" id="userName" required placeholder="Nama Anda">
+                    </div>
+                    <div class="form-group">
+                        <label>Nomor HP:</label>
+                        <input type="tel" id="userPhone" required placeholder="08xxxxxxxxxx" pattern="\d{11,13}" title="Nomor HP harus terdiri dari 11-13 angka!">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Kelas:</label>
+                        <input type="text" id="userClass" required placeholder="Contoh: PPTI 22" pattern="^(PPTI|PPBP|ppti|ppbp)\s?\d+$" title="Format: PPTI atau PPBP diikuti angka (contoh: PPTI 22)">
+                    </div>
+                    <div class="form-group">
+                        <label>Nomor Kamar:</label>
+                        <input type="text" id="userRoom" required placeholder="Contoh: B201" pattern="^[A-Za-z]{1,3}\d{3}$" title="Format: 1-3 huruf diikuti 3 angka (contoh: B201, ABC123)">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Pilih Tanggal:</label>
+                    <input type="date" id="bookingDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Pilih Jam Mulai (Durasi 2 Jam): <span class="required">*</span></label>
+                    <div class="time-slots" id="timeSlots"></div>
+                    <div id="timeSlotError" class="error-message">
+                        ⚠️ Anda harus memilih jam mulai terlebih dahulu!
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('bookingModal')">Batal</button>
+                    <button type="submit" class="btn btn-primary">Konfirmasi Booking</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Selesai -->
+    <div id="finishModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Selesai Menggunakan Mesin Cuci</span>
+                <button class="close-btn" onclick="closeModal('finishModal')">×</button>
+            </div>
+            
+            <div class="info-box">
+                <p>Pastikan mesin sudah kosong dan filter sudah bersih sebelum mengambil foto!</p>
+            </div>
+
+            <form id="finishForm">
+                <div class="form-group">
+                    <label>Foto Filter Mesin Cuci (Sesudah Digunakan):</label>
+                    <div class="photo-upload" onclick="document.getElementById('photoAfter').click()">
+                        <div style="font-size: 2em; margin-bottom: 10px;">📷</div>
+                        <div>Klik untuk ambil foto</div>
+                        <input type="file" id="photoAfter" accept="image/*" style="display: none;" onchange="previewPhoto(this, 'previewAfter')" required>
+                    </div>
+                    <img id="previewAfter" class="photo-preview" style="display: none;">
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('finishModal')">Batal</button>
+                    <button type="submit" class="btn btn-primary">Konfirmasi Selesai</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Laporan -->
+    <div id="reportModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Buat Laporan Masalah</span>
+                <button class="close-btn" onclick="closeModal('reportModal')">×</button>
+            </div>
+            <form id="reportForm">
+                <div class="form-group">
+                    <label>Mesin:</label>
+                    <select id="reportMachine" required>
+                        <option value="">-- Pilih Mesin --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Jenis Masalah:</label>
+                    <select id="reportType" required>
+                        <option value="">-- Pilih Jenis Masalah --</option>
+                        <option value="pakaian-tertinggal">Pakaian Tertinggal</option>
+                        <option value="mesin-rusak">Mesin Rusak</option>
+                        <option value="mesin-kotor">Mesin Kotor</option>
+                        <option value="lainnya">Lainnya</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Deskripsi Masalah:</label>
+                    <textarea id="reportDesc" rows="4" required placeholder="Jelaskan masalah yang Anda temukan..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Nama Pelapor:</label>
+                    <input type="text" id="reporterName" required placeholder="Nama Anda">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Kelas:</label>
+                        <input type="text" id="reporterClass" required placeholder="Contoh: PPTI 22" pattern="^(PPTI|PPBP|ppti|ppbp)\s?\d+$" title="Format: PPTI atau PPBP diikuti angka (contoh: PPTI 22)">
+                    </div>
+                    <div class="form-group">
+                        <label>Nomor Kamar:</label>
+                        <input type="text" id="reporterRoom" required placeholder="Contoh: B201" pattern="^[A-Za-z]{1,3}\d{3}$" title="Format: 1-3 huruf diikuti 3 angka (contoh: B201, ABC123)">
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('reportModal')">Batal</button>
+                    <button type="submit" class="btn btn-primary">Kirim Laporan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let machines = [
+            { id: 1, name: 'Mesin Cuci 1', status: 'available', type: 'perempuan' },
+            { id: 2, name: 'Mesin Cuci 2', status: 'available', type: 'perempuan' },
+            { id: 3, name: 'Mesin Cuci 3', status: 'available', type: 'perempuan' },
+            { id: 4, name: 'Mesin Cuci 4', status: 'available', type: 'perempuan' },
+            { id: 5, name: 'Mesin Cuci 5', status: 'available', type: 'perempuan' },
+            { id: 6, name: 'Mesin Cuci 6', status: 'available', type: 'perempuan' },
+            { id: 7, name: 'Mesin Cuci 7', status: 'available', type: 'perempuan' },
+            { id: 8, name: 'Mesin Cuci 1', status: 'available', type: 'laki-laki' },
+            { id: 9, name: 'Mesin Cuci 2', status: 'available', type: 'laki-laki' },
+            { id: 10, name: 'Mesin Cuci 3', status: 'available', type: 'laki-laki' },
+            { id: 11, name: 'Mesin Cuci 4', status: 'available', type: 'laki-laki' },
+            { id: 12, name: 'Mesin Cuci 5', status: 'available', type: 'laki-laki' }
+        ];
+
+        let bookings = [];
+        let reports = [];
+        let selectedMachineId = null;
+        let selectedTime = null;
+        let currentFinishBookingId = null;
+
+        const timeSlots = ['00:00', '02:00', '04:00', '06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00'];
+
+        function renderMachines() {
+            const container = document.getElementById('machinesContainer');
+            container.innerHTML = '';
+
+            ['perempuan', 'laki-laki'].forEach(type => {
+                const typeMachines = machines.filter(m => m.type === type);
+                const available = typeMachines.filter(m => {
+                    const booking = bookings.find(b => b.machineId === m.id && (b.status === 'booked' || b.status === 'in-use'));
+                    return !booking;
+                }).length;
+                const booked = typeMachines.filter(m => {
+                    const booking = bookings.find(b => b.machineId === m.id && b.status === 'booked');
+                    return booking;
+                }).length;
+                const inUse = typeMachines.filter(m => {
+                    const booking = bookings.find(b => b.machineId === m.id && b.status === 'in-use');
+                    return booking;
+                }).length;
+
+                const section = document.createElement('div');
+                section.className = 'area-section';
+                section.innerHTML = `
+                    <div class="area-header">
+                        <div class="area-title">${type === 'perempuan' ? '👩 Area Perempuan' : '👨 Area Laki-laki'} (${typeMachines.length} Mesin)</div>
+                        <div class="area-summary">
+                            <span class="summary-badge status-available">${available} Tersedia</span>
+                            <span class="summary-badge status-booked">${booked} Terbooking</span>
+                            <span class="summary-badge status-in-use">${inUse} Digunakan</span>
+                        </div>
+                    </div>
+                    <div class="machines-grid" id="grid-${type}"></div>
+                `;
+                container.appendChild(section);
+
+                const grid = document.getElementById(`grid-${type}`);
+                typeMachines.forEach(machine => {
+                    const currentBooking = bookings.find(b => 
+                        b.machineId === machine.id && 
+                        (b.status === 'booked' || b.status === 'in-use')
+                    );
+
+                    let statusClass = 'status-available';
+                    let statusText = 'Tersedia';
+                    let buttons = `<button class="btn btn-primary" onclick="openBookingModal(${machine.id})">Booking</button>`;
+                    let infoText = 'Siap digunakan';
+
+                    if (currentBooking) {
+                        if (currentBooking.status === 'booked') {
+                            statusClass = 'status-booked';
+                            statusText = 'Terbooking';
+                            infoText = `${currentBooking.user}<br>${currentBooking.date} | ${currentBooking.time}-${getEndTime(currentBooking.time)}`;
+                            buttons = `
+                                <button class="btn btn-primary" onclick="showBookingDetail(${machine.id})">Lihat Detail</button>
+                                <button class="btn btn-success" onclick="showFinishModal(${currentBooking.id})">Selesai & Upload Foto</button>
+                            `;
+                        } else if (currentBooking.status === 'in-use') {
+                            statusClass = 'status-in-use';
+                            statusText = 'Digunakan';
+                            infoText = `${currentBooking.user}<br>${currentBooking.time}-${getEndTime(currentBooking.time)}`;
+                            buttons = `
+                                <button class="btn btn-success" onclick="showFinishModal(${currentBooking.id})">Selesai & Upload Foto</button>
+                            `;
+                        }
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = 'machine-card';
+                    card.innerHTML = `
+                        <div class="machine-header">
+                            <div class="machine-name">${machine.name.replace('Mesin Cuci ' + (type === 'perempuan' ? 'Perempuan' : 'Laki-laki') + ' ', '#')}</div>
+                            <div class="status-badge ${statusClass}">${statusText}</div>
+                        </div>
+                        <div class="machine-info">${infoText}</div>
+                        ${buttons}
+                    `;
+                    grid.appendChild(card);
+                });
+            });
+        }
+
+        function getEndTime(startTime) {
+            const [hour, minute] = startTime.split(':').map(Number);
+            const endHour = (hour + 2) % 24;
+            return `${String(endHour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+        }
+
+        function openBookingModal(machineId) {
+            selectedMachineId = machineId;
+            selectedTime = null;
+            
+            // Reset error message
+            document.getElementById('timeSlotError').classList.remove('show');
+            
+            const select = document.getElementById('bookingMachine');
+            select.innerHTML = '<option value="">-- Pilih Mesin --</option>' + 
+                machines.map(m => `<option value="${m.id}" ${m.id === machineId ? 'selected' : ''}>${m.name}</option>`).join('');
+            
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('bookingDate').value = today;
+            document.getElementById('bookingDate').min = today;
+            
+            renderTimeSlots();
+            document.getElementById('bookingModal').classList.add('show');
+        }
+
+        function renderTimeSlots() {
+            const container = document.getElementById('timeSlots');
+            container.innerHTML = '';
+            
+            const selectedDate = document.getElementById('bookingDate').value;
+            const machineId = parseInt(document.getElementById('bookingMachine').value) || selectedMachineId;
+            
+            if (!machineId) return;
+
+            timeSlots.forEach(time => {
+                const slot = document.createElement('div');
+                slot.className = 'time-slot';
+                
+                const isBooked = isTimeSlotBooked(machineId, selectedDate, time);
+                const isPassed = isTimeSlotPassed(selectedDate, time);
+                
+                if (isBooked || isPassed) {
+                    slot.classList.add('booked');
+                    if (isPassed) {
+                        slot.innerHTML = `${time}<br><small>Lewat</small>`;
+                    } else {
+                        slot.innerHTML = `${time}<br><small>Terbooked</small>`;
+                    }
+                } else {
+                    slot.innerHTML = `${time}<br><small>${getEndTime(time)}</small>`;
+                    slot.onclick = () => selectTimeSlot(time);
+                }
+                
+                container.appendChild(slot);
+            });
+        }
+
+        function isTimeSlotBooked(machineId, date, startTime) {
+            const [startHour, startMin] = startTime.split(':').map(Number);
+            const startMinutes = startHour * 60 + startMin;
+            const endMinutes = startMinutes + 120;
+
+            return bookings.some(b => {
+                if (b.machineId !== machineId || b.date !== date || b.status === 'completed') return false;
+                
+                const [bHour, bMin] = b.time.split(':').map(Number);
+                const bStart = bHour * 60 + bMin;
+                const bEnd = bStart + 120;
+
+                return (startMinutes < bEnd && endMinutes > bStart);
+            });
+        }
+
+        function isTimeSlotPassed(date, startTime) {
+            const now = new Date();
+            const selectedDateTime = new Date(`${date}T${startTime}`);
+            return selectedDateTime < now;
+        }
+
+        function selectTimeSlot(time) {
+            selectedTime = time;
+            
+            // Hilangkan error message ketika user memilih jam
+            document.getElementById('timeSlotError').classList.remove('show');
+            
+            document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('selected'));
+            event.target.classList.add('selected');
+        }
+
+        document.getElementById('bookingDate').addEventListener('change', function() {
+            selectedTime = null;
+            renderTimeSlots();
+        });
+        
+        document.getElementById('bookingMachine').addEventListener('change', function() {
+            selectedTime = null;
+            renderTimeSlots();
+        });
+
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validasi: Cek apakah jam sudah dipilih
+            if (!selectedTime) {
+                const errorEl = document.getElementById('timeSlotError');
+                errorEl.classList.add('show');
+                
+                // Scroll ke time slots
+                document.getElementById('timeSlots').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            const machineId = parseInt(document.getElementById('bookingMachine').value);
+            const userName = document.getElementById('userName').value;
+            const userClass = document.getElementById('userClass').value;
+            const userRoom = document.getElementById('userRoom').value;
+            const userPhone = document.getElementById('userPhone').value;
+            const date = document.getElementById('bookingDate').value;
+            
+            const booking = {
+                id: Date.now(),
+                machineId: machineId,
+                machineName: machines.find(m => m.id === machineId).name,
+                user: userName,
+                class: userClass,
+                room: userRoom,
+                phone: userPhone,
+                date: date,
+                time: selectedTime,
+                photoAfter: null,
+                status: 'booked',
+                createdAt: new Date().toLocaleString('id-ID')
+            };
+
+            bookings.push(booking);
+            
+            scheduleReminders(booking);
+            
+            closeModal('bookingModal');
+            renderMachines();
+            renderBookings();
+            showNotification(`Booking berhasil! ${booking.machineName} pada ${date} jam ${selectedTime} - ${getEndTime(selectedTime)}`, 'success');
+            
+            document.getElementById('bookingForm').reset();
+            selectedTime = null;
+        });
+
+        function scheduleReminders(booking) {
+            const bookingDateTime = new Date(`${booking.date}T${booking.time}`);
+            const now = new Date();
+            const reminderTime = new Date(bookingDateTime.getTime() - 10 * 60000);
+            
+            if (reminderTime > now) {
+                const delay = reminderTime - now;
+                setTimeout(() => {
+                    showNotification(`Pengingat: Booking ${booking.machineName} Anda akan dimulai dalam 10 menit!`, 'warning');
+                    
+                    const bookingObj = bookings.find(b => b.id === booking.id);
+                    if (bookingObj) {
+                        bookingObj.status = 'in-use';
+                        renderMachines();
+                        renderBookings();
+                    }
+                }, delay);
+            }
+        }
+
+        function showFinishModal(bookingId) {
+            currentFinishBookingId = bookingId;
+            document.getElementById('previewAfter').style.display = 'none';
+            document.getElementById('finishForm').reset();
+            document.getElementById('finishModal').classList.add('show');
+        }
+
+        document.getElementById('finishForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const photoAfter = document.getElementById('photoAfter').files[0];
+            if (!photoAfter) {
+                showNotification('Ambil foto filter mesin cuci yang bersih terlebih dahulu!', 'error');
+                return;
+            }
+
+            const booking = bookings.find(b => b.id === currentFinishBookingId);
+            if (booking) {
+                booking.photoAfter = URL.createObjectURL(photoAfter);
+                booking.status = 'completed';
+                booking.completedAt = new Date().toLocaleString('id-ID');
+            }
+
+            closeModal('finishModal');
+            renderMachines();
+            renderBookings();
+            renderHistory();
+            showNotification('Terima kasih! Booking selesai. Mesin sudah tersedia untuk pengguna lain.', 'success');
+            
+            document.getElementById('finishForm').reset();
+            document.getElementById('previewAfter').style.display = 'none';
+        });
+
+        function renderBookings() {
+            const list = document.getElementById('bookingList');
+            const userBookings = bookings.filter(b => b.status !== 'completed');
+            
+            if (userBookings.length === 0) {
+                list.innerHTML = '<p style="color: #64748b; text-align: center; padding: 40px;">Belum ada booking aktif</p>';
+                return;
+            }
+
+            list.innerHTML = userBookings.map(booking => `
+                <div class="booking-item">
+                    <div class="booking-header">
+                        <div class="booking-title">${booking.machineName}</div>
+                        <div class="status-badge ${booking.status === 'booked' ? 'status-booked' : 'status-in-use'}">
+                            ${booking.status === 'booked' ? 'Terbooking' : 'Sedang Digunakan'}
+                        </div>
+                    </div>
+                    <div class="booking-details">
+                        <strong>Nama:</strong> ${booking.user}<br>
+                        <strong>Kelas:</strong> ${booking.class}<br>
+                        <strong>Kamar:</strong> ${booking.room}<br>
+                        <strong>HP:</strong> ${booking.phone}<br>
+                        <strong>Tanggal:</strong> ${booking.date}<br>
+                        <strong>Jam:</strong> ${booking.time} - ${getEndTime(booking.time)} (2 Jam)<br>
+                        <strong>Dibuat:</strong> ${booking.createdAt}
+                    </div>
+                    <button class="btn btn-success" onclick="showFinishModal(${booking.id})" style="margin-top: 15px;">
+                        Selesai & Upload Foto
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('historyList');
+            const completedBookings = bookings.filter(b => b.status === 'completed').sort((a, b) => b.id - a.id);
+            
+            if (completedBookings.length === 0) {
+                list.innerHTML = '<p style="color: #64748b; text-align: center; padding: 40px;">Belum ada history booking</p>';
+                return;
+            }
+
+            list.innerHTML = completedBookings.map(booking => `
+                <div class="history-item">
+                    <div class="booking-header">
+                        <div class="booking-title">${booking.machineName}</div>
+                        <div class="status-badge">
+                            ✓ Selesai
+                        </div>
+                    </div>
+                    <div class="booking-details">
+                        <strong>Nama:</strong> ${booking.user}<br>
+                        <strong>Kelas:</strong> ${booking.class}<br>
+                        <strong>Kamar:</strong> ${booking.room}<br>
+                        <strong>HP:</strong> ${booking.phone}<br>
+                        <strong>Tanggal:</strong> ${booking.date}<br>
+                        <strong>Jam:</strong> ${booking.time} - ${getEndTime(booking.time)} (2 Jam)<br>
+                        <strong>Dibuat:</strong> ${booking.createdAt}<br>
+                        <strong>Selesai:</strong> ${booking.completedAt}<br>
+                        ${booking.photoAfter ? `<br><strong>Foto Filter Mesin Cuci Setelah Digunakan:</strong><br><img src="${booking.photoAfter}" class="photo-thumbnail" onclick="showPhotoModal('${booking.photoAfter}')">` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showPhotoModal(photoUrl) {
+            event.stopPropagation();
+            document.getElementById('photoModalImg').src = photoUrl;
+            document.getElementById('photoModal').classList.add('show');
+        }
+
+        function closePhotoModal() {
+            document.getElementById('photoModal').classList.remove('show');
+        }
+
+        function openReportModal() {
+            const select = document.getElementById('reportMachine');
+            select.innerHTML = '<option value="">-- Pilih Mesin --</option>' + 
+                machines.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+            document.getElementById('reportModal').classList.add('show');
+        }
+
+        document.getElementById('reportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const machineId = parseInt(document.getElementById('reportMachine').value);
+            const machine = machines.find(m => m.id === machineId);
+            const type = document.getElementById('reportType').value;
+            const desc = document.getElementById('reportDesc').value;
+            const reporter = document.getElementById('reporterName').value;
+            const reporterClass = document.getElementById('reporterClass').value;
+            const reporterRoom = document.getElementById('reporterRoom').value;
+
+            const report = {
+                id: Date.now(),
+                machineId: machineId,
+                machineName: machine.name,
+                machineType: machine.type,
+                type: type,
+                description: desc,
+                reporter: reporter,
+                reporterClass: reporterClass,
+                reporterRoom: reporterRoom,
+                date: new Date().toLocaleString('id-ID'),
+                status: 'pending'
+            };
+
+            reports.push(report);
+
+            if (type === 'pakaian-tertinggal') {
+                const lastBooking = bookings
+                    .filter(b => b.machineId === machineId && b.status === 'completed')
+                    .sort((a, b) => b.id - a.id)[0];
+                
+                if (lastBooking) {
+                    showNotification(`Pemberitahuan terkirim ke ${lastBooking.user} (${lastBooking.phone}) tentang pakaian tertinggal`, 'success');
+                }
+            }
+
+            closeModal('reportModal');
+            renderReports();
+            showNotification('Laporan berhasil dikirim!', 'success');
+            
+            document.getElementById('reportForm').reset();
+        });
+
+        function renderReports() {
+            const list = document.getElementById('reportList');
+            
+            if (reports.length === 0) {
+                list.innerHTML = '<p style="color: #64748b; text-align: center; padding: 40px;">Belum ada laporan masalah</p>';
+                return;
+            }
+
+            list.innerHTML = reports.map(report => {
+                let typeIcon = '';
+                let typeName = 'Lainnya';
+                
+                if (report.type === 'pakaian-tertinggal') {
+                    typeIcon = '👕';
+                    typeName = 'Pakaian Tertinggal';
+                } else if (report.type === 'mesin-rusak') {
+                    typeIcon = '🔧';
+                    typeName = 'Mesin Rusak';
+                } else if (report.type === 'mesin-kotor') {
+                    typeIcon = '🧹';
+                    typeName = 'Mesin Kotor';
+                }
+
+                return `
+                    <div class="report-item">
+                        <div class="booking-header">
+                            <div class="booking-title">${report.machineName}</div>
+                            <div class="status-badge" style="background: #fef3c7; color: #92400e;">
+                                ${typeIcon} ${typeName}
+                            </div>
+                        </div>
+                        <div class="booking-details">
+                            <strong>Deskripsi:</strong> ${report.description}<br>
+                            <strong>Pelapor:</strong> ${report.reporter}<br>
+                            <strong>Kelas:</strong> ${report.reporterClass}<br>
+                            <strong>Kamar:</strong> ${report.reporterRoom}<br>
+                            <strong>Dilaporkan:</strong> ${report.date}<br>
+                            <strong>Status:</strong> <span style="color: #f59e0b; font-weight: 600;">Menunggu Tindak Lanjut</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function showNotification(message, type) {
+            const notif = document.createElement('div');
+            notif.className = `notification ${type}`;
+            notif.innerHTML = `
+                <div style="font-weight: bold; margin-bottom: 5px; font-size: 1.1em;">
+                    ${type === 'success' ? 'Berhasil' : type === 'warning' ? 'Pengingat' : 'Perhatian'}
+                </div>
+                <div style="line-height: 1.5;">${message}</div>
+            `;
+            document.body.appendChild(notif);
+
+            setTimeout(() => {
+                notif.style.animation = 'slideIn 0.3s reverse';
+                setTimeout(() => notif.remove(), 300);
+            }, 6000);
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`${tab}-tab`).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+            
+            // Reset error message saat modal ditutup
+            if (modalId === 'bookingModal') {
+                document.getElementById('timeSlotError').classList.remove('show');
+                selectedTime = null;
+            }
+        }
+
+        function previewPhoto(input, previewId) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById(previewId);
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function showBookingDetail(machineId) {
+            const booking = bookings.find(b => b.machineId === machineId && b.status !== 'completed');
+            if (booking) {
+                const details = `
+                    Detail Booking:<br><br>
+                    Mesin: ${booking.machineName}<br>
+                    Nama: ${booking.user}<br>
+                    Kelas: ${booking.class}<br>
+                    Kamar: ${booking.room}<br>
+                    HP: ${booking.phone}<br>
+                    Tanggal: ${booking.date}<br>
+                    Jam: ${booking.time} - ${getEndTime(booking.time)} (2 Jam)
+                `;
+                showNotification(details, 'success');
+            }
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('show');
+                
+                // Reset error message
+                if (event.target.id === 'bookingModal') {
+                    document.getElementById('timeSlotError').classList.remove('show');
+                    selectedTime = null;
+                }
+            }
+        }
+
+        renderMachines();
+        renderBookings();
+        renderHistory();
+        renderReports();
+
+        setTimeout(() => {
+            showNotification('Selamat datang di Smart Laundry Management System!', 'success');
+        }, 500);
+    </script>
+</body>
+</html>
