@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Laundry - Rumah Talenta BCA</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Smart Laundry Management</h1>
+            <p>Rumah Talenta BCA - Sistem Pengelolaan Laundry Pintar</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('mesin')">Status Mesin</button>
+            <button class="tab-btn" onclick="switchTab('booking')">Booking Saya</button>
+            <button class="tab-btn" onclick="switchTab('history')">History Booking</button>
+            <button class="tab-btn" onclick="switchTab('laporan')">Laporan Masalah</button>
+        </div>
+
+        <div id="mesin-tab" class="tab-content active">
+            <div id="machinesContainer"></div>
+        </div>
+
+        <div id="booking-tab" class="tab-content">
+            <div class="booking-list">
+                <h2 style="color: #1e3a8a; margin-bottom: 20px;">Booking Saya</h2>
+                <div id="bookingList"></div>
+            </div>
+        </div>
+
+        <div id="history-tab" class="tab-content">
+            <div class="booking-list">
+                <h2 style="color: #1e3a8a; margin-bottom: 20px;">History Booking</h2>
+                <div id="historyList"></div>
+            </div>
+        </div>
+
+        <div id="laporan-tab" class="tab-content">
+            <div class="booking-list">
+                <h2 style="color: #1e3a8a; margin-bottom: 20px;">Laporan Masalah</h2>
+                <button class="btn btn-primary" onclick="openReportModal()" style="margin-bottom: 20px;">
+                    Buat Laporan Baru
+                </button>
+                <div id="reportList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Photo Modal -->
+    <div id="photoModal" class="photo-modal" onclick="closePhotoModal()">
+        <img id="photoModalImg" src="" alt="Foto Filter Mesin Cuci">
+    </div>
+
+    <!-- Modal Booking -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Booking Mesin Cuci</span>
+                <button class="close-btn" onclick="closeModal('bookingModal')">×</button>
+            </div>
+            
+            <div class="info-box">
+                <p>Lengkapi semua data booking Anda. Sistem akan mengirim pengingat 10 menit sebelum waktu mulai.</p>
+            </div>
+
+            <form id="bookingForm">
+                <div class="form-group">
+                    <label>Pilih Mesin Cuci:</label>
+                    <select id="bookingMachine" required>
+                        <option value="">-- Pilih Mesin --</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nama Lengkap:</label>
+                        <input type="text" id="userName" required placeholder="Nama Anda">
+                    </div>
+                    <div class="form-group">
+                        <label>Nomor HP:</label>
+                        <input type="tel" id="userPhone" required placeholder="08xxxxxxxxxx" pattern="\d{11,13}" title="Nomor HP harus terdiri dari 11-13 angka!">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Kelas:</label>
+                        <input type="text" id="userClass" required placeholder="Contoh: PPTI 22" pattern="^(PPTI|PPBP|ppti|ppbp)\s?\d+$" title="Format: PPTI atau PPBP diikuti angka (contoh: PPTI 22)">
+                    </div>
+                    <div class="form-group">
+                        <label>Nomor Kamar:</label>
+                        <input type="text" id="userRoom" required placeholder="Contoh: B201" pattern="^[A-Za-z]{1,3}\d{3}$" title="Format: 1-3 huruf diikuti 3 angka (contoh: B201, ABC123)">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Pilih Tanggal:</label>
+                    <input type="date" id="bookingDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Pilih Jam Mulai (Durasi 2 Jam): <span class="required">*</span></label>
+                    <div class="time-slots" id="timeSlots"></div>
+                    <div id="timeSlotError" class="error-message">
+                        ⚠️ Anda harus memilih jam mulai terlebih dahulu!
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('bookingModal')">Batal</button>
+                    <button type="submit" class="btn btn-primary">Konfirmasi Booking</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Selesai -->
+    <div id="finishModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Selesai Menggunakan Mesin Cuci</span>
+                <button class="close-btn" onclick="closeModal('finishModal')">×</button>
+            </div>
+            
+            <div class="info-box">
+                <p>Pastikan mesin sudah kosong dan filter sudah bersih sebelum mengambil foto!</p>
+            </div>
+
+            <form id="finishForm">
+                <div class="form-group">
+                    <label>Foto Filter Mesin Cuci (Sesudah Digunakan):</label>
+                    <div class="photo-upload" onclick="document.getElementById('photoAfter').click()">
+                        <div style="font-size: 2em; margin-bottom: 10px;">📷</div>
+                        <div>Klik untuk ambil foto</div>
+                        <input type="file" id="photoAfter" accept="image/*" style="display: none;" onchange="previewPhoto(this, 'previewAfter')" required>
+                    </div>
+                    <img id="previewAfter" class="photo-preview" style="display: none;">
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('finishModal')">Batal</button>
+                    <button type="submit" class="btn btn-primary">Konfirmasi Selesai</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Laporan -->
+    <div id="reportModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Buat Laporan Masalah</span>
+                <button class="close-btn" onclick="closeModal('reportModal')">×</button>
+            </div>
+            <form id="reportForm">
+                <div class="form-group">
+                    <label>Mesin:</label>
+                    <select id="reportMachine" required>
+                        <option value="">-- Pilih Mesin --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Jenis Masalah:</label>
+                    <select id="reportType" required>
+                        <option value="">-- Pilih Jenis Masalah --</option>
+                        <option value="pakaian-tertinggal">Pakaian Tertinggal</option>
+                        <option value="mesin-rusak">Mesin Rusak</option>
+                        <option value="mesin-kotor">Mesin Kotor</option>
+                        <option value="lainnya">Lainnya</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Deskripsi Masalah:</label>
+                    <textarea id="reportDesc" rows="4" required placeholder="Jelaskan masalah yang Anda temukan..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Nama Pelapor:</label>
+                    <input type="text" id="reporterName" required placeholder="Nama Anda">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Kelas:</label>
+                        <input type="text" id="reporterClass" required placeholder="Contoh: PPTI 22" pattern="^(PPTI|PPBP|ppti|ppbp)\s?\d+$" title="Format: PPTI atau PPBP diikuti angka (contoh: PPTI 22)">
+                    </div>
+                    <div class="form-group">
+                        <label>Nomor Kamar:</label>
+                        <input type="text" id="reporterRoom" required placeholder="Contoh: B201" pattern="^[A-Za-z]{1,3}\d{3}$" title="Format: 1-3 huruf diikuti 3 angka (contoh: B201, ABC123)">
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('reportModal')">Batal</button>
+                    <button type="submit" class="btn btn-primary">Kirim Laporan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
